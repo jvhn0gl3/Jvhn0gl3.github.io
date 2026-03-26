@@ -28,10 +28,6 @@ function saveToStorage() {
   localStorage.setItem('fundraiserHub', JSON.stringify(fundraisers));
 }
 
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
-}
-
 function renderDashboard() {
   const grid = document.getElementById('fundraisersGrid');
   const emptyDiv = document.getElementById('emptyMessage');
@@ -84,7 +80,6 @@ function renderDashboard() {
         <div class="card-actions">
           <a href="${linkHref}" target="${linkTarget}" rel="${linkRel}" class="btn-link">🔗 Visit page</a>
           <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
-          <button class="edit-btn edit-fundraiser" data-edit-id="${f.id}">✏️ Edit</button>
         </div>
       </div>
     `;
@@ -95,14 +90,6 @@ function renderDashboard() {
       e.stopPropagation();
       const id = btn.getAttribute('data-id');
       simulateDonation(id);
-    });
-  });
-  
-  document.querySelectorAll('.edit-fundraiser').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const id = btn.getAttribute('data-edit-id');
-      if(id) openModalForEdit(id);
     });
   });
 }
@@ -162,77 +149,7 @@ function showToast(msg) {
   }, 2500);
 }
 
-function saveFundraiser(event) {
-  event.preventDefault();
-  const title = document.getElementById('campaignTitle').value.trim();
-  if (!title) {
-    alert('Please enter a campaign title');
-    return;
-  }
-  const category = document.getElementById('campaignCategory').value;
-  const description = document.getElementById('campaignDesc').value.trim();
-  let goal = parseFloat(document.getElementById('campaignGoal').value);
-  let raised = parseFloat(document.getElementById('campaignRaised').value);
-  const link = document.getElementById('campaignLink').value.trim();
-  const image = document.getElementById('campaignImage').value.trim();
-  const editId = document.getElementById('editId').value;
-  
-  if (isNaN(goal) || goal <= 0) goal = 100;
-  if (isNaN(raised)) raised = 0;
-  if (raised > goal) raised = goal;
-  
-  if (editId) {
-    const index = fundraisers.findIndex(f => f.id === editId);
-    if (index !== -1) {
-      fundraisers[index] = {
-        ...fundraisers[index],
-        title: title,
-        category: category,
-        description: description || "Help us make a difference!",
-        goal: goal,
-        raised: raised,
-        link: link,
-        image: image || null,
-        id: editId
-      };
-      saveToStorage();
-      renderDashboard();
-      closeModal();
-      showToast('✅ Fundraiser updated!');
-    }
-  }
-}
-
-function openModalForEdit(id) {
-  const fundraiser = fundraisers.find(f => f.id === id);
-  if (!fundraiser) return;
-  document.getElementById('modalTitle').innerText = '✏️ Edit fundraiser';
-  document.getElementById('campaignTitle').value = fundraiser.title;
-  document.getElementById('campaignCategory').value = fundraiser.category || 'Other';
-  document.getElementById('campaignDesc').value = fundraiser.description || '';
-  document.getElementById('campaignGoal').value = fundraiser.goal;
-  document.getElementById('campaignRaised').value = fundraiser.raised;
-  document.getElementById('campaignLink').value = fundraiser.link || '';
-  document.getElementById('campaignImage').value = fundraiser.image || '';
-  document.getElementById('editId').value = id;
-  document.getElementById('fundraiserModal').style.display = 'flex';
-}
-
-function closeModal() {
-  document.getElementById('fundraiserModal').style.display = 'none';
-  document.getElementById('fundraiserForm').reset();
-  document.getElementById('editId').value = '';
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   loadFromStorage();
   renderDashboard();
-  
-  const modal = document.getElementById('fundraiserModal');
-  const closeBtn = document.getElementById('closeModalBtn');
-  const form = document.getElementById('fundraiserForm');
-  
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-  form.addEventListener('submit', saveFundraiser);
 });

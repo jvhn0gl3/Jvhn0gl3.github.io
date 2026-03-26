@@ -28,54 +28,6 @@
   </div>
 </div>
 
-<div id="fundraiserModal" class="modal">
-  <div class="modal-content">
-    <h2 id="modalTitle">✏️ Edit fundraiser</h2>
-    <form id="fundraiserForm">
-      <div class="form-group">
-        <label>Campaign title *</label>
-        <input type="text" id="campaignTitle" required placeholder="e.g., Clean Water Initiative">
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <select id="campaignCategory">
-          <option value="Community">Community</option>
-          <option value="Medical">Medical</option>
-          <option value="Education">Education</option>
-          <option value="Environment">Environment</option>
-          <option value="Emergency">Emergency</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Short description</label>
-        <textarea id="campaignDesc" rows="2" placeholder="Brief story behind the cause..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Goal amount ($)</label>
-        <input type="number" id="campaignGoal" min="1" step="1" value="5000" required>
-      </div>
-      <div class="form-group">
-        <label>Raised so far ($)</label>
-        <input type="number" id="campaignRaised" min="0" step="1" value="0">
-      </div>
-      <div class="form-group">
-        <label>Fundraiser link (URL)</label>
-        <input type="url" id="campaignLink" placeholder="https://example.com/donate">
-      </div>
-      <div class="form-group">
-        <label>Image URL (optional)</label>
-        <input type="text" id="campaignImage" placeholder="/cohesive.jpg or https://...">
-      </div>
-      <input type="hidden" id="editId" value="">
-      <div class="modal-buttons">
-        <button type="button" id="closeModalBtn" class="btn-secondary">Cancel</button>
-        <button type="submit" class="btn-primary">Save changes</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <footer>
   ❤️ Every campaign matters — share & support with kindness.
 </footer>
