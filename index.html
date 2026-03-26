@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Fundraiser Hub | All Campaigns</title>
+  <!-- Google Fonts & simple reset for clean modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f9fafc;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      color: #1e293b;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* header & intro */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #1e40af;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.25rem 1rem;
+      border-radius: 40px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.3px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .subhead {
+      font-size: 1.2rem;
+      color: #475569;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    /* stats / summary row */
+    .stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border-radius: 28px;
+      padding: 1rem 1.8rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e9eef3;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-label {
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    .stat-number {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #0f3b5f;
+      line-height: 1;
+    }
+
+    .add-btn {
+      background: #0f3b5f;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .add-btn:hover {
+      background: #1e4a76;
+      transform: scale(0.97);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* fundraiser grid */
+    .fundraiser-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* card styling */
+    .card {
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eef2f8;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+      border-color: #cbdff2;
+    }
+
+    .card-header {
+      padding: 1.4rem 1.5rem 0.6rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .fundraiser-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #0b2b42;
+      letter-spacing: -0.2px;
+      line-height: 1.3;
+    }
+
+    .category-tag {
+      background: #eef2ff;
+      padding: 0.2rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .description {
+      padding: 0 1.5rem;
+      color: #475569;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* progress bar */
+    .progress-section {
+      padding: 0 1.5rem;
+      margin: 0.6rem 0 0.8rem 0;
+    }
+
+    .goal-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      color: #4a5b6e;
+    }
+
+    .progress-bar-bg {
+      background: #e4e9f0;
+      border-radius: 40px;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: #2c7da0;
+      width: 0%;
+      height: 100%;
+      border-radius: 40px;
+      transition: width 0.3s ease;
+    }
+
+    /* raised amount */
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0 1.5rem;
+      margin: 0.6rem 0 0.4rem;
+    }
+
+    .raised {
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: #0f3b5f;
+    }
+
+    .target {
+      font-size: 0.85rem;
+      color: #5e6f8d;
+    }
+
+    /* action buttons */
+    .card-actions {
+      display: flex;
+      gap: 0.6rem;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      margin-top: auto;
+      border-top: 1px solid #eff3f8;
+    }
+
+    .btn-link {
+      flex: 1;
+      text-align: center;
+      background: #f1f5f9;
+      color: #1e4663;
+      padding: 0.6rem 0;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-donate {
+      background: #0f3b5f;
+      color: white;
+      flex: 1;
+      text-align: center;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 0.6rem 0;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-donate:hover {
+      background: #1f5a83;
+    }
+
+    .btn-link:hover {
+      background: #e6edf4;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #9e2d2f;
+      transition: 0.2s;
+    }
+
+    .delete-btn:hover {
+      background: #fff1f0;
+      border-color: #f3b5b2;
+    }
+
+    /* empty state */
+    .empty-state {
+      text-align: center;
+      background: white;
+      border-radius: 2rem;
+      padding: 3rem 2rem;
+      border: 1px dashed #cbd5e1;
+      margin: 1rem 0;
+    }
+
+    .empty-state p {
+      color: #64748b;
+      margin-bottom: 1.2rem;
+    }
+
+    /* modal overlay */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 500px;
+      width: 90%;
+      border-radius: 32px;
+      padding: 1.8rem;
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border-radius: 20px;
+      border: 1px solid #cfdfed;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.8rem;
+      margin-top: 1.8rem;
+    }
+
+    .modal-buttons button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: #eef2f8;
+    }
+
+    .btn-primary {
+      background: #0f3b5f;
+      color: white;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #6c86a3;
+      border-top: 1px solid #e2edf7;
+      padding-top: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1.2rem;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .stats-row {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="badge">✨ impact collective</div>
+    <h1>All Fundraisers</h1>
+    <div class="subhead">One place to support, track, and grow every campaign that matters.</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item"><span class="stat-label">Total campaigns:</span> <span id="totalCampaignsCount" class="stat-number">0</span></div>
+    <div class="stat-item"><span class="stat-label">Total raised:</span> <span id="totalRaisedSum" class="stat-number">$0</span></div>
+    <button id="openModalBtn" class="add-btn">+ New fundraiser</button>
+  </div>
+
+  <div id="fundraisersGrid" class="fundraiser-grid">
+    <!-- dynamic cards injected here -->
+  </div>
+
+  <div id="emptyMessage" class="empty-state" style="display: none;">
+    <p>🌟 No fundraisers yet — start your first campaign and inspire generosity.</p>
+    <button id="emptyAddBtn" class="add-btn" style="background:#2c7da0;">➕ Create fundraiser</button>
+  </div>
+</div>
+
+<!-- Modal for Add/Edit -->
+<div id="fundraiserModal" class="modal">
+  <div class="modal-content">
+    <h2 id="modalTitle">➕ Create fundraiser</h2>
+    <form id="fundraiserForm">
+      <div class="form-group">
+        <label>Campaign title *</label>
+        <input type="text" id="campaignTitle" required placeholder="e.g., Clean Water Initiative">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="campaignCategory">
+          <option value="Community">Community</option>
+          <option value="Medical">Medical</option>
+          <option value="Education">Education</option>
+          <option value="Environment">Environment</option>
+          <option value="Emergency">Emergency</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Short description</label>
+        <textarea id="campaignDesc" rows="2" placeholder="Brief story behind the cause..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Goal amount ($)</label>
+        <input type="number" id="campaignGoal" min="1" step="1" value="5000" required>
+      </div>
+      <div class="form-group">
+        <label>Raised so far ($)</label>
+        <input type="number" id="campaignRaised" min="0" step="1" value="0">
+      </div>
+      <div class="form-group">
+        <label>Fundraiser link (URL)</label>
+        <input type="url" id="campaignLink" placeholder="https://example.com/donate">
+      </div>
+      <input type="hidden" id="editId" value="">
+      <div class="modal-buttons">
+        <button type="button" id="closeModalBtn" class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save fundraiser</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  ❤️ Every campaign matters — share & support with kindness.
+</footer>
+
+<script>
+  // ---------- DATA MODEL ----------
+  let fundraisers = [];
+
+  // Helper: load from localStorage
+  function loadFromStorage() {
+    const stored = localStorage.getItem('fundraiserHub');
+    if (stored) {
+      try {
+        fundraisers = JSON.parse(stored);
+      } catch(e) { console.warn(e); }
+    }
+    // if empty, seed with 3 beautiful demo fundraisers to make it lively
+    if (!fundraisers || fundraisers.length === 0) {
+      fundraisers = [
+        {
+          id: "fd1",
+          title: "Hope for Clean Water",
+          category: "Environment",
+          description: "Bringing safe drinking water to 500 families in rural communities.",
+          goal: 12000,
+          raised: 4750,
+          link: "https://example.com/cleanwater"
+        },
+        {
+          id: "fd2",
+          title: "Education for All",
+          category: "Education",
+          description: "Scholarships and school supplies for underprivileged children.",
+          goal: 8500,
+          raised: 6320,
+          link: "https://example.com/educationforall"
+        },
+        {
+          id: "fd3",
+          title: "Medical Relief Fund",
+          category: "Medical",
+          description: "Emergency surgeries and critical care support for uninsured patients.",
+          goal: 25000,
+          raised: 12340,
+          link: "https://example.com/medicalrelief"
+        }
+      ];
+      saveToStorage();
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem('fundraiserHub', JSON.stringify(fundraisers));
+  }
+
+  // Helper: generate short unique id
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+  }
+
+  // render all cards + update stats + empty state
+  function renderDashboard() {
+    const grid = document.getElementById('fundraisersGrid');
+    const emptyDiv = document.getElementById('emptyMessage');
+    
+    if (!fundraisers.length) {
+      grid.innerHTML = '';
+      emptyDiv.style.display = 'block';
+      document.getElementById('totalCampaignsCount').innerText = '0';
+      document.getElementById('totalRaisedSum').innerText = '$0';
+      return;
+    }
+    
+    emptyDiv.style.display = 'none';
+    
+    // update stats
+    const totalCampaigns = fundraisers.length;
+    const totalRaised = fundraisers.reduce((sum, f) => sum + (f.raised || 0), 0);
+    document.getElementById('totalCampaignsCount').innerText = totalCampaigns;
+    document.getElementById('totalRaisedSum').innerText = `$${totalRaised.toLocaleString()}`;
+    
+    // build cards
+    grid.innerHTML = fundraisers.map(f => {
+      const percent = Math.min(100, Math.floor(((f.raised || 0) / (f.goal || 1)) * 100));
+      const raisedFormatted = (f.raised || 0).toLocaleString();
+      const goalFormatted = (f.goal || 0).toLocaleString();
+      const linkHref = f.link && f.link.trim() !== "" ? f.link : "#";
+      const linkTarget = (f.link && f.link.trim() !== "") ? '_blank' : '_self';
+      const linkRel = (f.link && f.link.trim() !== "") ? 'noopener noreferrer' : '';
+      
+      return `
+        <div class="card" data-id="${f.id}">
+          <div class="card-header">
+            <span class="fundraiser-title">${escapeHtml(f.title)}</span>
+            <span class="category-tag">${escapeHtml(f.category || 'Other')}</span>
+          </div>
+          <div class="description">${escapeHtml(f.description || 'No description provided.')}</div>
+          <div class="progress-section">
+            <div class="goal-row">
+              <span>${percent}% funded</span>
+              <span>$${raisedFormatted} / $${goalFormatted}</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-fill" style="width: ${percent}%;"></div>
+            </div>
+          </div>
+          <div class="amount-row">
+            <span class="raised">$${raisedFormatted} raised</span>
+            <span class="target">goal $${goalFormatted}</span>
+          </div>
+          <div class="card-actions">
+            <a href="${linkHref}" target="${linkTarget}" rel="${linkRel}" class="btn-link">🔗 Visit page</a>
+            <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
+            <button class="delete-btn" data-id="${f.id}">🗑️ Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    // attach event listeners for donate simulation & delete
+    document.querySelectorAll('.donate-simulate').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        simulateDonation(id);
+      });
+    });
+    
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        deleteFundraiser(id);
+      });
+    });
+  }
+  
+  // simple escape to avoid XSS
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+  
+  // delete fundraiser
+  function deleteFundraiser(id) {
+    if (confirm('Remove this fundraiser? This action cannot be undone.')) {
+      fundraisers = fundraisers.filter(f => f.id !== id);
+      saveToStorage();
+      renderDashboard();
+    }
+  }
+  
+  // simulate donation: add $50 to raised, cannot exceed goal
+  function simulateDonation(id) {
+    const index = fundraisers.findIndex(f => f.id === id);
+    if (index !== -1) {
+      let currentRaised = fundraisers[index].raised || 0;
+      const goal = fundraisers[index].goal || 1;
+      let newRaised = currentRaised + 50;
+      if (newRaised > goal) newRaised = goal;
+      fundraisers[index].raised = newRaised;
+      saveToStorage();
+      renderDashboard();
+      // subtle feedback (optional alert replacement)
+      const msg = newRaised >= goal ? "🎉 Goal reached! Amazing support!" : "❤️ +$50 donated! Thank you!";
+      showToast(msg);
+    }
+  }
+  
+  // simple toast notification
+  function showToast(msg) {
+    let toast = document.getElementById('dynamicToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'dynamicToast';
+      toast.style.position = 'fixed';
+      toast.style.bottom = '24px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.backgroundColor = '#1e293b';
+      toast.style.color = 'white';
+      toast.style.padding = '10px 20px';
+      toast.style.borderRadius = '60px';
+      toast.style.fontSize = '0.85rem';
+      toast.style.fontWeight = '500';
+      toast.style.zIndex = '1100';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.2s';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    setTimeout(() => {
+      toast.style.opacity = '0';
+    }, 2500);
+  }
+  
+  // add or update fundraiser
+  function saveFundraiser(event) {
+    event.preventDefault();
+    const title = document.getElementById('campaignTitle').value.trim();
+    if (!title) {
+      alert('Please enter a campaign title');
+      return;
+    }
+    const category = document.getElementById('campaignCategory').value;
+    const description = document.getElementById('campaignDesc').value.trim();
+    let goal = parseFloat(document.getElementById('campaignGoal').value);
+    let raised = parseFloat(document.getElementById('campaignRaised').value);
+    const link = document.getElementById('campaignLink').value.trim();
+    const editId = document.getElementById('editId').value;
+    
+    if (isNaN(goal) || goal <= 0) goal = 100;
+    if (isNaN(raised)) raised = 0;
+    if (raised > goal) raised = goal; // prevent over-raising
+    
+    const newFundraiser = {
+      title: title,
+      category: category,
+      description: description || "Help us make a difference!",
+      goal: goal,
+      raised: raised,
+      link: link,
+    };
+    
+    if (editId) {
+      // update existing
+      const index = fundraisers.findIndex(f => f.id === editId);
+      if (index !== -1) {
+        fundraisers[index] = { ...fundraisers[index], ...newFundraiser, id: editId };
+      }
+    } else {
+      // create new
+      newFundraiser.id = generateId();
+      fundraisers.push(newFundraiser);
+    }
+    
+    saveToStorage();
+    renderDashboard();
+    closeModal();
+    showToast(editId ? '✅ Fundraiser updated!' : '🚀 New fundraiser added!');
+  }
+  
+  // open modal for create or edit
+  function openModalForCreate() {
+    document.getElementById('modalTitle').innerText = '✨ New fundraiser';
+    document.getElementById('fundraiserForm').reset();
+    document.getElementById('campaignGoal').value = '5000';
+    document.getElementById('campaignRaised').value = '0';
+    document.getElementById('campaignCategory').value = 'Community';
+    document.getElementById('campaignLink').value = '';
+    document.getElementById('editId').value = '';
+    document.getElementById('fundraiserModal').style.display = 'flex';
+  }
+  
+  function openModalForEdit(id) {
+    const fundraiser = fundraisers.find(f => f.id === id);
+    if (!fundraiser) return;
+    document.getElementById('modalTitle').innerText = '✏️ Edit fundraiser';
+    document.getElementById('campaignTitle').value = fundraiser.title;
+    document.getElementById('campaignCategory').value = fundraiser.category || 'Other';
+    document.getElementById('campaignDesc').value = fundraiser.description || '';
+    document.getElementById('campaignGoal').value = fundraiser.goal;
+    document.getElementById('campaignRaised').value = fundraiser.raised;
+    document.getElementById('campaignLink').value = fundraiser.link || '';
+    document.getElementById('editId').value = id;
+    document.getElementById('fundraiserModal').style.display = 'flex';
+  }
+  
+  function closeModal() {
+    document.getElementById('fundraiserModal').style.display = 'none';
+    document.getElementById('fundraiserForm').reset();
+    document.getElementById('editId').value = '';
+  }
+  
+  // attach edit to cards dynamically? We'll add an edit button or use context menu, but to keep UI clean,
+  // we provide an "edit" action by clicking on the title? I'll add an extra edit icon inside card header for better UX.
+  // But original spec didn't require edit, but it's intuitive. I'll embed a small edit button (pencil) near category.
+  // Since we already have delete and donate, we add "edit" to each card's actions.
+  // To avoid re-render complexity, we will modify renderDashboard to include an edit button.
+  // Actually we need to re-render with edit. Let's update card-actions to include an edit button.
+  // Buttons: Visit page, Donate, Edit, Delete. Better user experience.
+  // I'll override the card-actions section inside renderDashboard to include an edit button.
+  // Because the current card actions have only donate and delete + link. I'll insert edit.
+  // Let's rewrite the card actions part inside renderDashboard to have "✏️ Edit".
+  
+  // Override the renderDashboard function to include edit button:
+  const originalRender = renderDashboard;
+  window.renderDashboard = function() {
+    const grid = document.getElementById('fundraisersGrid');
+    const emptyDiv = document.getElementById('emptyMessage');
+    
+    if (!fundraisers.length) {
+      grid.innerHTML = '';
+      emptyDiv.style.display = 'block';
+      document.getElementById('totalCampaignsCount').innerText = '0';
+      document.getElementById('totalRaisedSum').innerText = '$0';
+      return;
+    }
+    emptyDiv.style.display = 'none';
+    const totalCampaigns = fundraisers.length;
+    const totalRaised = fundraisers.reduce((sum, f) => sum + (f.raised || 0), 0);
+    document.getElementById('totalCampaignsCount').innerText = totalCampaigns;
+    document.getElementById('totalRaisedSum').innerText = `$${totalRaised.toLocaleString()}`;
+    
+    grid.innerHTML = fundraisers.map(f => {
+      const percent = Math.min(100, Math.floor(((f.raised || 0) / (f.goal || 1)) * 100));
+      const raisedFormatted = (f.raised || 0).toLocaleString();
+      const goalFormatted = (f.goal || 0).toLocaleString();
+      const linkHref = f.link && f.link.trim() !== "" ? f.link : "#";
+      const linkTarget = (f.link && f.link.trim() !== "") ? '_blank' : '_self';
+      return `
+        <div class="card" data-id="${f.id}">
+          <div class="card-header">
+            <span class="fundraiser-title">${escapeHtml(f.title)}</span>
+            <span class="category-tag">${escapeHtml(f.category || 'Other')}</span>
+          </div>
+          <div class="description">${escapeHtml(f.description || 'No description provided.')}</div>
+          <div class="progress-section">
+            <div class="goal-row"><span>${percent}% funded</span><span>$${raisedFormatted} / $${goalFormatted}</span></div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: ${percent}%;"></div></div>
+          </div>
+          <div class="amount-row"><span class="raised">$${raisedFormatted} raised</span><span class="target">goal $${goalFormatted}</span></div>
+          <div class="card-actions">
+            <a href="${linkHref}" target="${linkTarget}" rel="noopener noreferrer" class="btn-link">🔗 Page</a>
+            <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
+            <button class="delete-btn edit-fundraiser" data-edit-id="${f.id}" style="background:#f1f5f9; color:#1f4a6e;">✏️ Edit</button>
+            <button class="delete-btn" data-id="${f.id}">🗑️</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    document.querySelectorAll('.donate-simulate').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-id');
+        simulateDonation(id);
+      });
+    });
+    document.querySelectorAll('.delete-btn[data-id]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-id');
+        deleteFundraiser(id);
+      });
+    });
+    document.querySelectorAll('.edit-fundraiser').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-edit-id');
+        if(id) openModalForEdit(id);
+      });
+    });
+  };
+  
+  // reassign global references
+  renderDashboard = window.renderDashboard;
+  
+  // event binding & init
+  document.addEventListener('DOMContentLoaded', () => {
+    loadFromStorage();
+    renderDashboard();
+    
+    const modal = document.getElementById('fundraiserModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const emptyAdd = document.getElementById('emptyAddBtn');
+    const form = document.getElementById('fundraiserForm');
+    
+    openBtn.addEventListener('click', openModalForCreate);
+    if(emptyAdd) emptyAdd.addEventListener('click', openModalForCreate);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+    form.addEventListener('submit', saveFundraiser);
+  });
+</script>
+</body>
+</html>
