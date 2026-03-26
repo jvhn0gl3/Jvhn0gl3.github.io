@@ -492,21 +492,8 @@
         fundraisers = JSON.parse(stored);
       } catch(e) { console.warn(e); }
     }
-    // Only one starter fundraiser - completely blank template for you to customize
-    if (!fundraisers || fundraisers.length === 0) {
-      fundraisers = [
-        {
-          id: "starter-001",
-          title: "My First Campaign",
-          category: "Community",
-          description: "Help me make a difference! Edit this description, goal, and details to match your cause.",
-          goal: 5000,
-          raised: 0,
-          link: ""
-        }
-      ];
-      saveToStorage();
-    }
+    // NO default fundraisers - completely empty slate for YOUR fundraisers
+    // If localStorage is empty, fundraisers remains empty array
   }
 
   function saveToStorage() {
