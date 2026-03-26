@@ -1,7 +1,5 @@
-// ---------- DATA MODEL ----------
 let fundraisers = [];
 
-// Helper: load from localStorage
 function loadFromStorage() {
   const stored = localStorage.getItem('fundraiserHub');
   if (stored) {
@@ -9,7 +7,6 @@ function loadFromStorage() {
       fundraisers = JSON.parse(stored);
     } catch(e) { console.warn(e); }
   }
-  // If empty, add one default fundraiser with the cohesive.jpg image
   if (!fundraisers || fundraisers.length === 0) {
     fundraisers = [
       {
@@ -31,12 +28,10 @@ function saveToStorage() {
   localStorage.setItem('fundraiserHub', JSON.stringify(fundraisers));
 }
 
-// Helper: generate short unique id
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
 }
 
-// render all cards + update stats + empty state
 function renderDashboard() {
   const grid = document.getElementById('fundraisersGrid');
   const emptyDiv = document.getElementById('emptyMessage');
@@ -51,13 +46,11 @@ function renderDashboard() {
   
   emptyDiv.style.display = 'none';
   
-  // update stats
   const totalCampaigns = fundraisers.length;
   const totalRaised = fundraisers.reduce((sum, f) => sum + (f.raised || 0), 0);
   document.getElementById('totalCampaignsCount').innerText = totalCampaigns;
   document.getElementById('totalRaisedSum').innerText = `$${totalRaised.toLocaleString()}`;
   
-  // build cards
   grid.innerHTML = fundraisers.map(f => {
     const percent = Math.min(100, Math.floor(((f.raised || 0) / (f.goal || 1)) * 100));
     const raisedFormatted = (f.raised || 0).toLocaleString();
@@ -97,7 +90,6 @@ function renderDashboard() {
     `;
   }).join('');
   
-  // attach event listeners for donate simulation & edit
   document.querySelectorAll('.donate-simulate').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -115,7 +107,6 @@ function renderDashboard() {
   });
 }
 
-// simple escape to avoid XSS
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
@@ -128,7 +119,6 @@ function escapeHtml(str) {
   });
 }
 
-// simulate donation: add $50 to raised, cannot exceed goal
 function simulateDonation(id) {
   const index = fundraisers.findIndex(f => f.id === id);
   if (index !== -1) {
@@ -139,13 +129,11 @@ function simulateDonation(id) {
     fundraisers[index].raised = newRaised;
     saveToStorage();
     renderDashboard();
-    // subtle feedback
     const msg = newRaised >= goal ? "🎉 Goal reached! Amazing support!" : "❤️ +$50 donated! Thank you!";
     showToast(msg);
   }
 }
 
-// simple toast notification
 function showToast(msg) {
   let toast = document.getElementById('dynamicToast');
   if (!toast) {
@@ -174,7 +162,6 @@ function showToast(msg) {
   }, 2500);
 }
 
-// update fundraiser (edit only, no create)
 function saveFundraiser(event) {
   event.preventDefault();
   const title = document.getElementById('campaignTitle').value.trim();
@@ -195,7 +182,6 @@ function saveFundraiser(event) {
   if (raised > goal) raised = goal;
   
   if (editId) {
-    // update existing fundraiser
     const index = fundraisers.findIndex(f => f.id === editId);
     if (index !== -1) {
       fundraisers[index] = {
@@ -217,7 +203,6 @@ function saveFundraiser(event) {
   }
 }
 
-// open modal for edit only (no create)
 function openModalForEdit(id) {
   const fundraiser = fundraisers.find(f => f.id === id);
   if (!fundraiser) return;
@@ -239,7 +224,6 @@ function closeModal() {
   document.getElementById('editId').value = '';
 }
 
-// event binding & init
 document.addEventListener('DOMContentLoaded', () => {
   loadFromStorage();
   renderDashboard();
