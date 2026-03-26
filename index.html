@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Fundraiser Hub | All Campaigns</title>
+  <title>Fundraiser Hub | My Campaigns</title>
   <!-- Google Fonts & simple reset for clean modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <style>
@@ -410,9 +410,9 @@
 
 <div class="container">
   <div class="header">
-    <div class="badge">✨ impact collective</div>
-    <h1>All Fundraisers</h1>
-    <div class="subhead">One place to support, track, and grow every campaign that matters.</div>
+    <div class="badge">✨ my impact</div>
+    <h1>My Fundraisers</h1>
+    <div class="subhead">Track and manage your fundraising campaigns in one place.</div>
   </div>
 
   <div class="stats-row">
@@ -492,35 +492,17 @@
         fundraisers = JSON.parse(stored);
       } catch(e) { console.warn(e); }
     }
-    // if empty, seed with 3 beautiful demo fundraisers to make it lively
+    // Only one starter fundraiser - completely blank template for you to customize
     if (!fundraisers || fundraisers.length === 0) {
       fundraisers = [
         {
-          id: "fd1",
-          title: "Hope for Clean Water",
-          category: "Environment",
-          description: "Bringing safe drinking water to 500 families in rural communities.",
-          goal: 12000,
-          raised: 4750,
-          link: "https://example.com/cleanwater"
-        },
-        {
-          id: "fd2",
-          title: "Education for All",
-          category: "Education",
-          description: "Scholarships and school supplies for underprivileged children.",
-          goal: 8500,
-          raised: 6320,
-          link: "https://example.com/educationforall"
-        },
-        {
-          id: "fd3",
-          title: "Medical Relief Fund",
-          category: "Medical",
-          description: "Emergency surgeries and critical care support for uninsured patients.",
-          goal: 25000,
-          raised: 12340,
-          link: "https://example.com/medicalrelief"
+          id: "starter-001",
+          title: "My First Campaign",
+          category: "Community",
+          description: "Help me make a difference! Edit this description, goal, and details to match your cause.",
+          goal: 5000,
+          raised: 0,
+          link: ""
         }
       ];
       saveToStorage();
@@ -589,13 +571,14 @@
           <div class="card-actions">
             <a href="${linkHref}" target="${linkTarget}" rel="${linkRel}" class="btn-link">🔗 Visit page</a>
             <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
+            <button class="delete-btn edit-fundraiser" data-edit-id="${f.id}" style="background:#f1f5f9; color:#1f4a6e;">✏️ Edit</button>
             <button class="delete-btn" data-id="${f.id}">🗑️ Delete</button>
           </div>
         </div>
       `;
     }).join('');
     
-    // attach event listeners for donate simulation & delete
+    // attach event listeners for donate simulation & delete & edit
     document.querySelectorAll('.donate-simulate').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -604,11 +587,19 @@
       });
     });
     
-    document.querySelectorAll('.delete-btn').forEach(btn => {
+    document.querySelectorAll('.delete-btn[data-id]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         deleteFundraiser(id);
+      });
+    });
+    
+    document.querySelectorAll('.edit-fundraiser').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-edit-id');
+        if(id) openModalForEdit(id);
       });
     });
   }
@@ -632,6 +623,7 @@
       fundraisers = fundraisers.filter(f => f.id !== id);
       saveToStorage();
       renderDashboard();
+      showToast('Fundraiser removed');
     }
   }
   
@@ -646,7 +638,7 @@
       fundraisers[index].raised = newRaised;
       saveToStorage();
       renderDashboard();
-      // subtle feedback (optional alert replacement)
+      // subtle feedback
       const msg = newRaised >= goal ? "🎉 Goal reached! Amazing support!" : "❤️ +$50 donated! Thank you!";
       showToast(msg);
     }
@@ -758,87 +750,6 @@
     document.getElementById('fundraiserForm').reset();
     document.getElementById('editId').value = '';
   }
-  
-  // attach edit to cards dynamically? We'll add an edit button or use context menu, but to keep UI clean,
-  // we provide an "edit" action by clicking on the title? I'll add an extra edit icon inside card header for better UX.
-  // But original spec didn't require edit, but it's intuitive. I'll embed a small edit button (pencil) near category.
-  // Since we already have delete and donate, we add "edit" to each card's actions.
-  // To avoid re-render complexity, we will modify renderDashboard to include an edit button.
-  // Actually we need to re-render with edit. Let's update card-actions to include an edit button.
-  // Buttons: Visit page, Donate, Edit, Delete. Better user experience.
-  // I'll override the card-actions section inside renderDashboard to include an edit button.
-  // Because the current card actions have only donate and delete + link. I'll insert edit.
-  // Let's rewrite the card actions part inside renderDashboard to have "✏️ Edit".
-  
-  // Override the renderDashboard function to include edit button:
-  const originalRender = renderDashboard;
-  window.renderDashboard = function() {
-    const grid = document.getElementById('fundraisersGrid');
-    const emptyDiv = document.getElementById('emptyMessage');
-    
-    if (!fundraisers.length) {
-      grid.innerHTML = '';
-      emptyDiv.style.display = 'block';
-      document.getElementById('totalCampaignsCount').innerText = '0';
-      document.getElementById('totalRaisedSum').innerText = '$0';
-      return;
-    }
-    emptyDiv.style.display = 'none';
-    const totalCampaigns = fundraisers.length;
-    const totalRaised = fundraisers.reduce((sum, f) => sum + (f.raised || 0), 0);
-    document.getElementById('totalCampaignsCount').innerText = totalCampaigns;
-    document.getElementById('totalRaisedSum').innerText = `$${totalRaised.toLocaleString()}`;
-    
-    grid.innerHTML = fundraisers.map(f => {
-      const percent = Math.min(100, Math.floor(((f.raised || 0) / (f.goal || 1)) * 100));
-      const raisedFormatted = (f.raised || 0).toLocaleString();
-      const goalFormatted = (f.goal || 0).toLocaleString();
-      const linkHref = f.link && f.link.trim() !== "" ? f.link : "#";
-      const linkTarget = (f.link && f.link.trim() !== "") ? '_blank' : '_self';
-      return `
-        <div class="card" data-id="${f.id}">
-          <div class="card-header">
-            <span class="fundraiser-title">${escapeHtml(f.title)}</span>
-            <span class="category-tag">${escapeHtml(f.category || 'Other')}</span>
-          </div>
-          <div class="description">${escapeHtml(f.description || 'No description provided.')}</div>
-          <div class="progress-section">
-            <div class="goal-row"><span>${percent}% funded</span><span>$${raisedFormatted} / $${goalFormatted}</span></div>
-            <div class="progress-bar-bg"><div class="progress-fill" style="width: ${percent}%;"></div></div>
-          </div>
-          <div class="amount-row"><span class="raised">$${raisedFormatted} raised</span><span class="target">goal $${goalFormatted}</span></div>
-          <div class="card-actions">
-            <a href="${linkHref}" target="${linkTarget}" rel="noopener noreferrer" class="btn-link">🔗 Page</a>
-            <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
-            <button class="delete-btn edit-fundraiser" data-edit-id="${f.id}" style="background:#f1f5f9; color:#1f4a6e;">✏️ Edit</button>
-            <button class="delete-btn" data-id="${f.id}">🗑️</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-    
-    document.querySelectorAll('.donate-simulate').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = btn.getAttribute('data-id');
-        simulateDonation(id);
-      });
-    });
-    document.querySelectorAll('.delete-btn[data-id]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = btn.getAttribute('data-id');
-        deleteFundraiser(id);
-      });
-    });
-    document.querySelectorAll('.edit-fundraiser').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = btn.getAttribute('data-edit-id');
-        if(id) openModalForEdit(id);
-      });
-    });
-  };
-  
-  // reassign global references
-  renderDashboard = window.renderDashboard;
   
   // event binding & init
   document.addEventListener('DOMContentLoaded', () => {
