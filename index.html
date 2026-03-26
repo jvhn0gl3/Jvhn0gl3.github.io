@@ -284,21 +284,23 @@
       background: #e6edf4;
     }
 
-    .delete-btn {
-      background: transparent;
-      border: 1px solid #e2e8f0;
-      cursor: pointer;
-      padding: 0.6rem 1rem;
-      border-radius: 40px;
+    .edit-btn {
+      flex: 1;
+      text-align: center;
+      background: #f1f5f9;
+      color: #1f4a6e;
+      padding: 0.6rem 0;
+      border-radius: 60px;
+      font-weight: 600;
       font-size: 0.8rem;
-      font-weight: 500;
-      color: #9e2d2f;
+      border: none;
+      cursor: pointer;
       transition: 0.2s;
+      font-family: inherit;
     }
 
-    .delete-btn:hover {
-      background: #fff1f0;
-      border-color: #f3b5b2;
+    .edit-btn:hover {
+      background: #e6edf4;
     }
 
     /* empty state */
@@ -585,27 +587,18 @@
           <div class="card-actions">
             <a href="${linkHref}" target="${linkTarget}" rel="${linkRel}" class="btn-link">🔗 Visit page</a>
             <button class="btn-donate donate-simulate" data-id="${f.id}">💖 Donate $50</button>
-            <button class="delete-btn edit-fundraiser" data-edit-id="${f.id}" style="background:#f1f5f9; color:#1f4a6e;">✏️ Edit</button>
-            <button class="delete-btn" data-id="${f.id}">🗑️ Delete</button>
+            <button class="edit-btn edit-fundraiser" data-edit-id="${f.id}">✏️ Edit</button>
           </div>
         </div>
       `;
     }).join('');
     
-    // attach event listeners for donate simulation & delete & edit
+    // attach event listeners for donate simulation & edit
     document.querySelectorAll('.donate-simulate').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         simulateDonation(id);
-      });
-    });
-    
-    document.querySelectorAll('.delete-btn[data-id]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        deleteFundraiser(id);
       });
     });
     
@@ -629,16 +622,6 @@
     }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
       return c;
     });
-  }
-  
-  // delete fundraiser
-  function deleteFundraiser(id) {
-    if (confirm('Remove this fundraiser? This action cannot be undone.')) {
-      fundraisers = fundraisers.filter(f => f.id !== id);
-      saveToStorage();
-      renderDashboard();
-      showToast('Fundraiser removed');
-    }
   }
   
   // simulate donation: add $50 to raised, cannot exceed goal
