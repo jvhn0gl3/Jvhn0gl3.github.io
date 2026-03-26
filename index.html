@@ -95,28 +95,6 @@
       line-height: 1;
     }
 
-    .add-btn {
-      background: #0f3b5f;
-      color: white;
-      border: none;
-      padding: 0.6rem 1.4rem;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .add-btn:hover {
-      background: #1e4a76;
-      transform: scale(0.97);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
     /* fundraiser grid */
     .fundraiser-grid {
       display: grid;
@@ -427,7 +405,6 @@
   <div class="stats-row">
     <div class="stat-item"><span class="stat-label">Total campaigns:</span> <span id="totalCampaignsCount" class="stat-number">0</span></div>
     <div class="stat-item"><span class="stat-label">Total raised:</span> <span id="totalRaisedSum" class="stat-number">$0</span></div>
-    <button id="openModalBtn" class="add-btn">+ New fundraiser</button>
   </div>
 
   <div id="fundraisersGrid" class="fundraiser-grid">
@@ -436,14 +413,13 @@
 
   <div id="emptyMessage" class="empty-state" style="display: none;">
     <p>🌟 No fundraisers yet — start your first campaign and inspire generosity.</p>
-    <button id="emptyAddBtn" class="add-btn" style="background:#2c7da0;">➕ Create fundraiser</button>
   </div>
 </div>
 
 <!-- Modal for Add/Edit -->
 <div id="fundraiserModal" class="modal">
   <div class="modal-content">
-    <h2 id="modalTitle">➕ Create fundraiser</h2>
+    <h2 id="modalTitle">✏️ Edit fundraiser</h2>
     <form id="fundraiserForm">
       <div class="form-group">
         <label>Campaign title *</label>
@@ -483,7 +459,7 @@
       <input type="hidden" id="editId" value="">
       <div class="modal-buttons">
         <button type="button" id="closeModalBtn" class="btn-secondary">Cancel</button>
-        <button type="submit" class="btn-primary">Save fundraiser</button>
+        <button type="submit" class="btn-primary">Save changes</button>
       </div>
     </form>
   </div>
@@ -670,7 +646,7 @@
     }, 2500);
   }
   
-  // add or update fundraiser
+  // update fundraiser (edit only, no create)
   function saveFundraiser(event) {
     event.preventDefault();
     const title = document.getElementById('campaignTitle').value.trim();
@@ -688,49 +664,32 @@
     
     if (isNaN(goal) || goal <= 0) goal = 100;
     if (isNaN(raised)) raised = 0;
-    if (raised > goal) raised = goal; // prevent over-raising
-    
-    const newFundraiser = {
-      title: title,
-      category: category,
-      description: description || "Help us make a difference!",
-      goal: goal,
-      raised: raised,
-      link: link,
-      image: image || null
-    };
+    if (raised > goal) raised = goal;
     
     if (editId) {
-      // update existing
+      // update existing fundraiser
       const index = fundraisers.findIndex(f => f.id === editId);
       if (index !== -1) {
-        fundraisers[index] = { ...fundraisers[index], ...newFundraiser, id: editId };
+        fundraisers[index] = {
+          ...fundraisers[index],
+          title: title,
+          category: category,
+          description: description || "Help us make a difference!",
+          goal: goal,
+          raised: raised,
+          link: link,
+          image: image || null,
+          id: editId
+        };
+        saveToStorage();
+        renderDashboard();
+        closeModal();
+        showToast('✅ Fundraiser updated!');
       }
-    } else {
-      // create new
-      newFundraiser.id = generateId();
-      fundraisers.push(newFundraiser);
     }
-    
-    saveToStorage();
-    renderDashboard();
-    closeModal();
-    showToast(editId ? '✅ Fundraiser updated!' : '🚀 New fundraiser added!');
   }
   
-  // open modal for create or edit
-  function openModalForCreate() {
-    document.getElementById('modalTitle').innerText = '✨ New fundraiser';
-    document.getElementById('fundraiserForm').reset();
-    document.getElementById('campaignGoal').value = '5000';
-    document.getElementById('campaignRaised').value = '0';
-    document.getElementById('campaignCategory').value = 'Community';
-    document.getElementById('campaignLink').value = '';
-    document.getElementById('campaignImage').value = '';
-    document.getElementById('editId').value = '';
-    document.getElementById('fundraiserModal').style.display = 'flex';
-  }
-  
+  // open modal for edit only (no create)
   function openModalForEdit(id) {
     const fundraiser = fundraisers.find(f => f.id === id);
     if (!fundraiser) return;
@@ -758,13 +717,9 @@
     renderDashboard();
     
     const modal = document.getElementById('fundraiserModal');
-    const openBtn = document.getElementById('openModalBtn');
     const closeBtn = document.getElementById('closeModalBtn');
-    const emptyAdd = document.getElementById('emptyAddBtn');
     const form = document.getElementById('fundraiserForm');
     
-    openBtn.addEventListener('click', openModalForCreate);
-    if(emptyAdd) emptyAdd.addEventListener('click', openModalForCreate);
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
     form.addEventListener('submit', saveFundraiser);
