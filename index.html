@@ -143,6 +143,13 @@
       border-color: #cbdff2;
     }
 
+    .card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: #f1f5f9;
+    }
+
     .card-header {
       padding: 1.4rem 1.5rem 0.6rem 1.5rem;
       display: flex;
@@ -467,6 +474,10 @@
         <label>Fundraiser link (URL)</label>
         <input type="url" id="campaignLink" placeholder="https://example.com/donate">
       </div>
+      <div class="form-group">
+        <label>Image URL (optional)</label>
+        <input type="text" id="campaignImage" placeholder="/cohesive.jpg or https://...">
+      </div>
       <input type="hidden" id="editId" value="">
       <div class="modal-buttons">
         <button type="button" id="closeModalBtn" class="btn-secondary">Cancel</button>
@@ -492,8 +503,22 @@
         fundraisers = JSON.parse(stored);
       } catch(e) { console.warn(e); }
     }
-    // NO default fundraisers - completely empty slate for YOUR fundraisers
-    // If localStorage is empty, fundraisers remains empty array
+    // If empty, add one default fundraiser with the cohesive.jpg image
+    if (!fundraisers || fundraisers.length === 0) {
+      fundraisers = [
+        {
+          id: "starter-001",
+          title: "My First Campaign",
+          category: "Community",
+          description: "Help me make a difference! Edit this description, goal, and details to match your cause.",
+          goal: 5000,
+          raised: 0,
+          link: "",
+          image: "/cohesive.jpg"
+        }
+      ];
+      saveToStorage();
+    }
   }
 
   function saveToStorage() {
@@ -534,9 +559,11 @@
       const linkHref = f.link && f.link.trim() !== "" ? f.link : "#";
       const linkTarget = (f.link && f.link.trim() !== "") ? '_blank' : '_self';
       const linkRel = (f.link && f.link.trim() !== "") ? 'noopener noreferrer' : '';
+      const imageUrl = f.image && f.image.trim() !== "" ? f.image : null;
       
       return `
         <div class="card" data-id="${f.id}">
+          ${imageUrl ? `<img class="card-image" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(f.title)}" onerror="this.style.display='none'">` : ''}
           <div class="card-header">
             <span class="fundraiser-title">${escapeHtml(f.title)}</span>
             <span class="category-tag">${escapeHtml(f.category || 'Other')}</span>
@@ -673,6 +700,7 @@
     let goal = parseFloat(document.getElementById('campaignGoal').value);
     let raised = parseFloat(document.getElementById('campaignRaised').value);
     const link = document.getElementById('campaignLink').value.trim();
+    const image = document.getElementById('campaignImage').value.trim();
     const editId = document.getElementById('editId').value;
     
     if (isNaN(goal) || goal <= 0) goal = 100;
@@ -686,6 +714,7 @@
       goal: goal,
       raised: raised,
       link: link,
+      image: image || null
     };
     
     if (editId) {
@@ -714,6 +743,7 @@
     document.getElementById('campaignRaised').value = '0';
     document.getElementById('campaignCategory').value = 'Community';
     document.getElementById('campaignLink').value = '';
+    document.getElementById('campaignImage').value = '';
     document.getElementById('editId').value = '';
     document.getElementById('fundraiserModal').style.display = 'flex';
   }
@@ -728,6 +758,7 @@
     document.getElementById('campaignGoal').value = fundraiser.goal;
     document.getElementById('campaignRaised').value = fundraiser.raised;
     document.getElementById('campaignLink').value = fundraiser.link || '';
+    document.getElementById('campaignImage').value = fundraiser.image || '';
     document.getElementById('editId').value = id;
     document.getElementById('fundraiserModal').style.display = 'flex';
   }
